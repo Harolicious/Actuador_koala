@@ -39,3 +39,6 @@ gmsh.model.mesh.generate(2)
 gmsh.model.mesh.refine()
 
 gmsh.write("Finger_visu.stl")
+
+gmsh.clear()
+gmsh.finalize()
