@@ -12,29 +12,29 @@ import os
 import numpy as np
 path = os.path.dirname(os.path.abspath(__file__))+'/mesh/'
 
-# class Controller(Sofa.Core.Controller):   
+class Controller(Sofa.Core.Controller):   
     
-#     def __init__(self, *args, **kwargs):
-#         Sofa.Core.Controller.__init__(self, *args, **kwargs)
-#         print(" Python::__init__::" + str(self.name.value))
+    def __init__(self, *args, **kwargs):
+        Sofa.Core.Controller.__init__(self, *args, **kwargs)
+        print(" Python::__init__::" + str(self.name.value))
         
-#         self.RootNode = kwargs['RootNode']
-#         self.SPC = kwargs['SPC']
-#         self.Increment = 0.4
-#         self.Pressure = 0
-#         print(kwargs['RootNode'])
+        self.RootNode = kwargs['RootNode']
+        self.SPC = kwargs['SPC']
+        self.Increment = 0.4
+        self.Pressure = 0
+        print(kwargs['RootNode'])
     
         
-#         print('Finished Init')
+        print('Finished Init')
         
-#     def onAnimateBeginEvent(self, eventType):
-#         self.Pressure = self.Pressure + self.Increment
-#         if self.Pressure > 60 or self.Pressure < 0:
-#             # self.Pressure = 550
-#             self.Increment = -self.Increment
-#         self.SPC.value.value = [self.Pressure]
+    def onAnimateBeginEvent(self, eventType):
+        self.Pressure = self.Pressure + self.Increment
+        if self.Pressure > 60 or self.Pressure < 0:
+            # self.Pressure = 550
+            self.Increment = -self.Increment
+        self.SPC.value.value = [self.Pressure]
         
-#         pass
+        pass
   
 
 def createScene(rootNode):
@@ -81,7 +81,7 @@ def createScene(rootNode):
                 rootNode.addObject('RequiredPlugin', name='Sofa.Component.Topology.Mapping') # Needed to use components [Tetra2TriangleTopologicalMapping]
                 rootNode.addObject('FreeMotionAnimationLoop')
                 rootNode.addObject('GenericConstraintSolver', maxIterations=100, tolerance = 0.0000001)
-                rootNode.dt = 0.0001
+                rootNode.dt = 0.001
 
 		#finger
                 finger = rootNode.addChild('finger')
@@ -102,7 +102,7 @@ def createScene(rootNode):
                 Container.init()
                 MO.init()
                 boxROIStiffness.init()
-                YM1 = 180000
+                YM1 = 250000
                 YM2 = YM1*100
                 YMArray = np.ones(len(Loader.tetras))*YM1
                 IdxElementsInROI = np.array(boxROIStiffness.tetrahedronIndices.value)
@@ -131,8 +131,8 @@ def createScene(rootNode):
                 cavity.addObject('MeshSTLLoader', name='loader', filename='Uniaxial_cavity.stl')
                 cavity.addObject('MeshTopology', src='@loader', name='topo')
                 cavity.addObject('MechanicalObject', name='cavity')             
-                cavity.addObject('SurfacePressureConstraint', triangles='@topo.triangles', value=0.5, valueType=0)
-                # SPC = cavity.addObject('SurfacePressureConstraint', triangles='@topo.triangles', value=0, valueType=0)
+                # cavity.addObject('SurfacePressureConstraint', triangles='@topo.triangles', value=3.25, valueType=0)
+                SPC = cavity.addObject('SurfacePressureConstraint', triangles='@topo.triangles', value=0, valueType=0)
                 #cavity.addObject('BarycentricMapping', name='mapping',  mapForces=True, mapMasses=False)
                 cavity.addObject('BarycentricMapping', name='mapping',  mapForces=True, mapMasses=True)
 
@@ -143,7 +143,7 @@ def createScene(rootNode):
                 fingerVisu.addObject("OglModel", src="@loader")
                 fingerVisu.addObject("BarycentricMapping")
 
-                # rootNode.addObject(Controller(name="ActuationController", RootNode=rootNode, SPC=SPC))
+                rootNode.addObject(Controller(name="ActuationController", RootNode=rootNode, SPC=SPC))
             
 
                 return rootNode

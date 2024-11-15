@@ -98,7 +98,7 @@ def createScene(rootNode):
                 MO = finger.addObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False)
                 finger.addObject('UniformMass', totalMass=0.5)
                 
-                boxROIStiffness = finger.addObject('BoxROI', name='boxROIStiffness', box=[-5, -1, -5,  100, 41, -2], drawBoxes=True, position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
+                boxROIStiffness = finger.addObject('BoxROI', name='boxROIStiffness', box=[-5, -1, -5,  100, 41, -2], drawBoxes=False, position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
                 Container.init()
                 MO.init()
                 boxROIStiffness.init()
